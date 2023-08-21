@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %} Notes {% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container my-4">
+        <div style="display: flex; justify-content: space-between; align-items: center;" class="mb-5">
+            <div>
+                <h1>My Notes:</h1>
+            </div>
+            <div>
+                <button class="btn btn-success rounded-0 shadow-lg me-4" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Note</button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <form action="{% url 'create' %}" class="modal-content" method="post">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Add Note:</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {{form}}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Note</button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+
+                
+            </div>
+        </div>
+
+        <div class="row gx-5 gy-5">
+            {% for note in notes %}
+            <!-- Note Card -->
+            <div class="col-3">
+                <div class="card shadow-lg" style="height: 220px;">
+                    <div class="card-header" style="display: flex;justify-content:space-between;align-items: center;">
+                       <a href="" style="text-decoration: none;" data-bs-toggle="modal" data-bs-target="#viewNote{{note.id}}">
+                            {% if note.short_note %}
+                            {{ note.short_note | truncatechars:20 }}
+                            {% else %}
+                            <p>No Title</p>
+                            {% endif %}
+                       </a>
+
+                       <!-- Modal -->
+                        <div class="modal fade" id="viewNote{{note.id}}" tabindex="-1" aria-labelledby="viewNoteLabel{{note.id}}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5 mx-3" id="exampleModalLabel">{{note.short_note}}</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p style="font-size: 20px;" class="mx-3">{{note.content}}</p>
+                                <div class="text-center mt-5">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+
+                       <div>
+                        <button style="outline: 0;border:0;" data-bs-toggle="modal" data-bs-target="#exampleModal{{note.id}}"><span class="material-icons">edit_note</span></button>
+                            <div class="modal fade" id="exampleModal{{note.id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{note.id}}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <form action="{% url 'update' note.id %}" method="post" class="modal-content">
+                                        {% csrf_token %}
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Note </h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <label class="form-label">Title</label>
+                                            <input type="text" name="short_note" value="{{note.short_note}}" class="form-control my-3">
+                                            <label class="form-label">Content:</label>
+                                            <textarea class="form-control my-3" name="content" rows="3">{{note.content}}</textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                </div>
+
+                        <a href="{% url 'destroy' note.id %}" style="outline: 0;border:0;text-decoration:none;"><span class="material-icons text-danger">delete</span></a>
+                       </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="text-align: justify;">{{note.content | truncatechars:170 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div style="border: 2px solid black;border-radius: 5px; height: 500px;display:flex;align-items:center; justify-content:center;">
+                <h1 class="text-center">No Notes Added</h1>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

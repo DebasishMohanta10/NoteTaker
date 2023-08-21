@@ -1,0 +1,27 @@
+{% extends 'auth/base.html' %}
+{% load static %}
+{% block title %} Login  {% endblock %}
+
+{% block content %}
+    <div class="container" style="height: 100vh;">
+        <div class="row d-flex align-items-center" style="height: inherit;">
+            <div class="col-6">
+                <div style="width: 50%;">
+                    <img src="{% static 'rocket.jpg' %}" alt="" class="img-fluid">
+                </div>
+                <h1>Welcome to Note Taker</h1>
+                <p>Capture your thoughts in style</p>
+            </div>
+
+            <div class="col-6">
+                <h4 class="text-center fw-bold mb-4">Login Form</h4>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" value="Login Now!" class="btn btn-primary mt-3">
+                </form>
+                <p class="mt-4">Not having an account? <a href="{% url 'signup' %}" class="text-decoration-none">Create One</a>.</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
